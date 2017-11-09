@@ -1,0 +1,74 @@
+
+.navbar-brand {
+	color: #fff !important;
+}
+
+.alert_group .alert_title {
+	font-weight: bold;
+}
+
+.error {
+	color: red !important;
+}
+
+.error input {
+	border: solid thin red !important;
+	color: red !important;
+}
+
+.note {
+	font-size: 10px;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+#user_menu {
+	background: #fff !important;
+	color: #262626 !important;
+}
+
+.image_container {
+	position: relative;
+    overflow: hidden;
+	padding-top: 100%;
+}
+
+.image_container > img {
+	position: absolute;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: 100%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.moreItems {
+	background: #0099cc !important;
+}
+
+.moreItems h3, .moreItems p:first-of-type {
+	background: #f0f0f5 !important;
+}
+
+#searchTable {
+	width: 100%;
+}
+
+#searchTable > tfoot td {
+	text-align: center;
+}
+
+.pagination {
+	width: 100%;
+	text-align: right;
+}
+
+footer {
+	background: #fff !important;
+}
