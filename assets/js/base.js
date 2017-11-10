@@ -1,5 +1,6 @@
 
 function showAlert(title, content, obj, type) {
+	obj.empty();
 	obj.html('<div class="alert_title">'+
 				'<span class="title">'+title+'</span>'+
 				'<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+
@@ -152,8 +153,10 @@ function load_categories(id, key, obj, obj_type) {
 						);
 					});
 					
+					break;
+					
 				default:
-					obj.val(data.data[0].category_name);
+					obj.attr('data-id',data.data[0].category_id).val(data.data[0].category_name);
 			}
 			
 		}

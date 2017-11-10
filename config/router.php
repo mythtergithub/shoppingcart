@@ -61,6 +61,22 @@
 						'pageNum' => '1',
 						'pageSize' => '10',
 						'search_controller' => 'load_product_list',
+						'search_title' => 'Item',
+						'additionals' => '
+							<div class="col-lg-4">
+								<div class="form-group" id="searchFilter">
+									<div class="input-group">
+										<span class="input-group-addon">
+											<span>Filter Category</span>
+										</span>				
+										<input type="hidden" class="form-control field" id="filter_category" value="0" />
+										<select class="form-control" id="mnuCategory">
+											<option value="0">--All Categories--</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						',
 						'table_headers' => [
 							[
 								'name'	=> '#',
@@ -120,7 +136,48 @@
 					break;
 				
 				case 'product_category':
+				
 					$has_search = TRUE;
+					
+					$data = [
+						'pageNum' => '1',
+						'pageSize' => '10',
+						'search_controller' => 'load_category_list',
+						'search_title' => 'Category',
+						'table_headers' => [
+							[
+								'name'	=> '#',
+								'width'	=> '3%',
+								'alt'	=> 'ctr',
+								'class' => ''
+							],
+							[
+								'name'	=> 'Category Code',
+								'width'	=> '10%',
+								'alt'	=> 'category_code',
+								'class' => ''
+							],
+							[
+								'name'	=> 'Category Name',
+								'width'	=> '20%',
+								'alt'	=> 'category_name',
+								'class' => ''
+							],
+							[
+								'name'	=> 'Description',
+								'width'	=> '20%',
+								'alt'	=> 'category_desc',
+								'class' => ''
+							],
+							[
+								'name'	=> '',
+								'width'	=> '10%',
+								'alt'	=> 'action',
+								'class' => ''
+							]
+						]
+					];
+					
 					break;
 			}
 			

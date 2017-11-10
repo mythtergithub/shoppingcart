@@ -59,5 +59,7 @@
 	define('SUBMENU', $submenu);
 	
 	define('DBASE_DATE', date('Y-m-d H:i:s'));
+	
+	define('IMAGES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/shoppingcart/assets/images/');
 
 ?>

@@ -1,6 +1,8 @@
 <?php
 	$table_headers = $data['table_headers'];
 	$search_controller = $data['search_controller'];
+	$search_title = $data['search_title'];
+	$additionals = $data['additionals'] ?? '';
 	$page_num = $data['pageNum'];
 	$page_size = $data['pageSize'];
 	$headers = '';
@@ -17,11 +19,11 @@
 <div class="row">
 	<div class="col-lg-4">
 		<div class="form-group" id="searchForm">
-			<div class='input-group'>
+			<div class="input-group">
 				<span class="input-group-addon">
-					<span>Search Item</span>
+					<span>Search <?php echo $search_title; ?></span>
 				</span>
-				<input type="text" class="form-control field" id="keyword" name="keyword" placeholder="Search here...">
+				<input type="text" class="form-control field" id="keyword" name="keyword" placeholder="Search here..." />
 				<div class="input-group-btn">
 					<button class="btn btn-default" type="button" id="btnSEARCH">
 						<span class="glyphicon glyphicon-search"></span>
@@ -30,6 +32,7 @@
 			</div>
 		</div>
 	</div>
+	<?php echo $additionals; ?>
 </div>
 <div class="row">
 	<div class="table-responsive">
@@ -51,7 +54,7 @@
 		<div class="pagination hidden">
 			<span id="filter">
 				<select id="mnuNumPages">
-					<!--<option value="5">5 items per page</option>-->
+					<option value="5">5 items per page</option>
 					<option value="10" selected>10 items per page</option>
 					<option value="15">15 items per page</option>
 					<option value="25">25 items per page</option>

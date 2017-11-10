@@ -1,16 +1,14 @@
 
-var view_product = function() {
+var view_category = function() {
 	
 	var $this = $(this);
 	var id = $this.attr('alt');
 	var modal = $('#generalModal');
 	
-	modal.find('.modal-dialog').addClass('modal-lg');
-	
 	$.post(
 		base_url + 'process.php',
 		{
-			action		: 'load_products',
+			action		: 'load_category_list',
 			key			: '',
 			category	: 0,
 			id			: id,
@@ -21,7 +19,7 @@ var view_product = function() {
 		}
 	).done(function(data){
 		
-		var title = '<b>View Item<b>';
+		var title = '<b>View Category<b>';
 		var body = '<p>' + data.message + '</p>';
 		var footer = '';
 		var options = 'show';
@@ -37,20 +35,16 @@ var view_product = function() {
 		showModal(modal,title,body,footer,options);
 		
 		if (data.response) {
-			modal.find('.modal-body').find('#frmVIEWITEM').removeClass('hidden');
+			modal.find('.modal-body').find('#frmVIEWCATEGORY').removeClass('hidden');
 			modal.find('.modal-body').find('.buttons').empty();
 			
 			$.each(modal.find('.field'),function() {
-				var item_field = $(this);
+				var category_field = $(this);
 				
-				item_field.val( data.data[0][item_field.attr('name')] );
+				category_field.val( data.data[0][category_field.attr('name')] );
 				
-				if (item_field.attr('name') == 'item_code') {
-					var val = data.data[0][item_field.attr('name')].split('-');
-					item_field.prev().children('#category_code').html(val[0]);
-					item_field.val( val[1] );
-					
-					item_field.on('keyup paste',function(){
+				if (category_field.attr('name') == 'category_code' || category_field.attr('name') == 'directory') {
+					category_field.on('keyup paste',function(){
 						$(this).parents('.form-group').removeClass('error').find('.note').html('');
 						if (!validateAlphaNumeric($(this).val())){
 							$(this).parents('.form-group').addClass('error').find('.note').html('Only digits and letters are allowed.');
@@ -58,51 +52,21 @@ var view_product = function() {
 					});
 				}
 				
-				item_field.attr( 'data-old', data.data[0][item_field.attr('name')] );
+				category_field.attr( 'data-old', data.data[0][category_field.attr('name')] );
 				
-				item_field.attr('name',item_field.attr('name') + '_' + id)
-				item_field.attr('id',item_field.attr('id') + '_' + id)
+				category_field.attr('name',category_field.attr('name') + '_' + id)
+				category_field.attr('id',category_field.attr('id') + '_' + id)
 			})
 			
-			// modal.find('#item_dateAdded_datepicker')
-				// .attr('id','item_dateAdded_datepicker_'+id)
-				// .datetimepicker({
-					// language: 'en',
-					// format: 'yyyy-mm-dd hh:ii:ss',
-					// showMeridian: true,
-					// autoclose: true,
-					// todayBtn: true,
-					// todayHighlight: true,
-					// pickerPosition: 'top-right',
-					// defaultDate: data.data[0]['item_dateAdded']
-				// });
-				
-			modal.find('[for="item_dateAdded_datepicker"]').attr('for','item_dateAdded_datepicker_'+id);			
-			modal.find('[for="item_dateModified_datepicker"]').attr('for','item_dateModified_datepicker_'+id);
+			modal.find('[for="category_dateAdded_datepicker"]').attr('for','category_dateAdded_datepicker_'+id);
+			modal.find('[for="category_dateAdded_datepicker"]').attr('for','category_dateAdded_datepicker_'+id);
 			
-			modal.find('#item_status_check').attr('id','item_status_check_'+id)
-			modal.find('#item_status_check').attr('name','item_status_check_'+id)
-			modal.find('#item_status_check_'+id).bootstrapSwitch({state: ( (data.data[0].item_status == 'active') ? true : false ),onText:'active',offText:'inactive'});
-			modal.find('#item_status_check_'+id).on('switchChange.bootstrapSwitch', function(event, state) {
-				modal.find('#item_status_check_'+id).parents('.form-group').find('.field:hidden').val( state ? 'active' : 'inactive' );
-			});
-			
-			modal.find('#mnuCategory').find('option[value="'+data.data[0].category_id+'"]').prop('selected',true);
-			modal.find('#mnuCategory').on('change',function(){
-				var $this = $(this);
-				var mnuVal = $this.find(':selected').attr('value');
-				
-				$this.parents('.form-group').find('.field:hidden').val(mnuVal);
-				
-				modal.find('#item_code_'+id).prev().children('#category_code').html($this.find(':selected').data('code'));
-			});
-			
-			var imageSrc = base_url + 'assets/images/' + modal.find('#mnuCategory').find(':selected').data('dir') + '/' + data.data[0]['item_code'] + '.jpg';
+			var imageSrc = base_url + 'assets/images/' + data.data[0]['category_code'] + '.jpg';
 			
 			modal.find('.modal-body')
 				.find('#image_container').addClass('hero-feature')
 				.children('div').addClass('thumbnail')
-				.find('#frmItemImage').addClass('image_container')
+				.find('#frmCategoryImage').addClass('image_container')
 				.find('img')
 					.attr('src', imageSrc)
 					.attr('data-old', imageSrc)
@@ -127,7 +91,7 @@ var view_product = function() {
 					modal.find('.caption').addClass('error').find('.note').html('File size cannot exceed 2097152 bytes (or 2MB).');
 				} else if (file.type == 'image/jpeg' || file.type == 'image/jpg') {
 					modal.find('.caption').removeClass('error').find('.note').html('');
-					document.querySelector('#generalModal #frmItemImage > img').src = fr.result;
+					document.querySelector('#generalModal #frmCategoryImage > img').src = fr.result;
 				} else {
 					modal.find('.caption').addClass('error').find('.note').html('Only *.JPG files are allowed.');
 				}
@@ -141,15 +105,15 @@ var view_product = function() {
 			});
 			
 			modal.find('#btnUPDATEPIC').on('click',function(){
-				var conf = confirm('Are you sure you want to change the item image?');
+				var conf = confirm('Are you sure you want to change the Category image?');
 				
 				if (conf) {
 					var data = new FormData();
 					
-					data.append('action', 'update_item_image');
-					data.append('item_image', document.querySelector('#generalModal #imgItem').files[0]);
-					data.append('item_code', modal.find('#item_code_'+id).data('old'));
-					data.append('cat_dir', modal.find('#mnuCategory').find('[value="' + modal.find('#item_category_'+id).data('old') + '"]').data('dir'));
+					data.append('action', 'update_category_image');
+					data.append('category_image', document.querySelector('#generalModal #imgItem').files[0]);
+					data.append('category_code', modal.find('#category_code_'+id).data('old'));
+					data.append('cat_dir', modal.find('#mnuCategory').find('[value="' + modal.find('#category_category_'+id).data('old') + '"]').data('dir'));
 					
 					$.ajax({
 						url: base_url + 'process.php',
@@ -159,17 +123,17 @@ var view_product = function() {
 						contentType: false,
 						method: 'POST',
 						success: function(data){
-							showAlert('Item Image Update', data.message, modal.find('.alert_group'), (data.response) ? 'success' : 'danger');
+							showAlert('Category Image Update', data.message, modal.find('.alert_group'), (data.response) ? 'success' : 'danger');
 						},
 						error: function(obj, status){
-							showAlert('Item Image Update', 'An error has occured', modal.find('.alert_group'), 'danger');
+							showAlert('Category Image Update', 'An error has occured', modal.find('.alert_group'), 'danger');
 						}
 					});
 				}
 			});
 			
 			modal.find('#btnRESETPIC').on('click',function(){
-				modal.find('#frmItemImage > img').attr('src', modal.find('#frmItemImage > img').data('old'));
+				modal.find('#frmCategoryImage > img').attr('src', modal.find('#frmCategoryImage > img').data('old'));
 				modal.find('#imgItem').val(null);
 				modal.find('.caption').removeClass('error').find('.note').html('');
 			});
@@ -186,7 +150,7 @@ var view_product = function() {
 						
 						$this.val($this.data('old'));
 						
-						if ($this.attr('name') == 'item_code_'+id) {							
+						if ($this.attr('name') == 'category_code_'+id) {							
 							var val = $this.data('old').split('-');
 							$this.prev().children('#category_code').html(val[0]);
 							$this.val( val[1] );
@@ -229,14 +193,14 @@ var view_product = function() {
 				});
 				
 				if (error > 0) {
-					showAlert('Failed to Update Item', 'Some required fields are empty.', modal.find('.alert_group'), 'danger');
+					showAlert('Failed to Update Category', 'Some required fields are empty.', modal.find('.alert_group'), 'danger');
 				} else {
 					var params = modal.find('.field').serializeArray();
 					
 					var extra = '_'+id;
 					var extraLength = extra.length;
 					
-					// remove '_{item_id}'
+					// remove '_{category_id}'
 					$.each(params, function(id,val) {
 						var thisLength = params[id]['name'].length
 						params[id]['name'] = params[id]['name'].substr(0,thisLength-extraLength);
@@ -244,18 +208,18 @@ var view_product = function() {
 					});
 					
 					params = formToArray(params);
-					params['item_code'] = modal.find('#category_code').text() + '-' + params['item_code'];
-					params['item_status'] = params['item_status'] == 'active' ? '1' : '0';
+					params['category_code'] = modal.find('#category_code').text() + '-' + params['category_code'];
+					params['category_status'] = params['category_status'] == 'active' ? '1' : '0';
 					
-					if (modal.find('.field#item_code_'+id).data('old') != params['item_code']) {
+					if (modal.find('.field#category_code_'+id).data('old') != params['category_code']) {
 						
 						$.post(
 							base_url + 'process.php',
 							{
-								action		: 'load_products',
+								action		: 'load_category_list',
 								key			: '',
 								category	: 0,
-								id			: params['item_code'],
+								id			: params['category_code'],
 								orderby		: false,
 								orderfield	: false,
 								start		: false,
@@ -263,19 +227,19 @@ var view_product = function() {
 							}
 						).done(function(data){
 							if (data.response) {
-								modal.find('.field#item_code_'+id).parents('.form-group').addClass('error').find('.note').html('Item Code must be unique.');
-								showAlert('Failed to Update Item', 'Item Code must be unique.', modal.find('.alert_group'), 'danger');
+								modal.find('.field#category_code_'+id).parents('.form-group').addClass('error').find('.note').html('Category Code must be unique.');
+								showAlert('Failed to Update Item', 'Category Code must be unique.', modal.find('.alert_group'), 'danger');
 							} else {
-								modal.find('.field#item_code_'+id).parents('.form-group').removeClass('error').find('.note').html('');
+								modal.find('.field#category_code_'+id).parents('.form-group').removeClass('error').find('.note').html('');
 								
 								$.post(
 									base_url + 'process.php',
 									{
-										action		: 'save_item',
+										action		: 'save_category',
 										type		: 'update',
-										oldCode		: modal.find('#item_code_'+id).data('old'),
-										oldCat		: modal.find('#item_category_'+id).data('old'),
-										oldDir		: modal.find('#mnuCategory').find('[value="' + modal.find('#item_category_'+id).data('old') + '"]').data('dir'),
+										oldCode		: modal.find('#category_code_'+id).data('old'),
+										oldCat		: modal.find('#category_category_'+id).data('old'),
+										oldDir		: modal.find('#mnuCategory').find('[value="' + modal.find('#category_category_'+id).data('old') + '"]').data('dir'),
 										newDir		: modal.find('#mnuCategory').find(':selected').data('dir'),
 										params		: params
 									}
@@ -286,8 +250,8 @@ var view_product = function() {
 										
 										showModal(
 											modal,
-											'Update Item Details',
-											'Sucessfully updated item details.',
+											'Update Category Details',
+											'Sucessfully updated Category details.',
 											'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 											''
 										);
@@ -295,15 +259,15 @@ var view_product = function() {
 										var pSize = parseInt($('#page_size').attr('alt'));
 										var pNum = (parseInt($('#page_num').text())-1) * pSize;
 										
-										load_product_list('',0,0,'item_name','ASC',pNum,pSize);
+										load_product_list('',0,0,'category_name','ASC',pNum,pSize);
 									} else {
 								
 										modal.find('.modal-dialog').removeClass('modal-lg');
 									
 										showModal(
 											modal,
-											'Update Item Details',
-											'Failed to update item details. ' + data.message,
+											'Update Category Details',
+											'Failed to update Category details. ' + data.message,
 											'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 											'show'
 										);
@@ -316,11 +280,11 @@ var view_product = function() {
 						$.post(
 							base_url + 'process.php',
 							{
-								action		: 'save_item',
+								action		: 'save_category',
 								type		: 'update',
-								oldCode		: modal.find('#item_code_'+id).data('old'),
-								oldCat		: modal.find('#item_category_'+id).data('old'),
-								oldDir		: modal.find('#mnuCategory').find('[value="' + modal.find('#item_category_'+id).data('old') + '"]').data('dir'),
+								oldCode		: modal.find('#category_code_'+id).data('old'),
+								oldCat		: modal.find('#category_category_'+id).data('old'),
+								oldDir		: modal.find('#mnuCategory').find('[value="' + modal.find('#category_category_'+id).data('old') + '"]').data('dir'),
 								newDir		: modal.find('#mnuCategory').find(':selected').data('dir'),
 								params		: params
 							}
@@ -331,8 +295,8 @@ var view_product = function() {
 								
 								showModal(
 									modal,
-									'Update Item Details',
-									'Sucessfully updated item details.',
+									'Update Category Details',
+									'Sucessfully updated Category details.',
 									'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 									'show'
 								);
@@ -340,15 +304,15 @@ var view_product = function() {
 								var pSize = parseInt($('#page_size').attr('alt'));
 								var pNum = (parseInt($('#page_num').text())-1) * pSize;
 								
-								load_product_list('',0,0,'item_name','ASC',pNum,pSize);
+								load_product_list('',0,0,'category_name','ASC',pNum,pSize);
 							} else {
 								
 								modal.find('.modal-dialog').removeClass('modal-lg');
 								
 								showModal(
 									modal,
-									'Update Item Details',
-									'Failed to update item details. ' + data.message,
+									'Update Category Details',
+									'Failed to update Category details. ' + data.message,
 									'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 									'show'
 								);
@@ -364,7 +328,7 @@ var view_product = function() {
 	
 }
 
-var load_product_list = function(args) { // key, category, id, orderby, orderfield, start, limit
+var load_category_list = function(args) {
 	
 	$('#searchTable tbody').empty();
 	
@@ -372,11 +336,9 @@ var load_product_list = function(args) { // key, category, id, orderby, orderfie
 		base_url + 'process.php',
 		{
 			action		: $('#search_controller').attr('alt'),
+			type		: 'list',
 			key			: args.key,
-			category	: (typeof args.category != 'undefined') ? args.category : $('#searchFilter').find('.field:hidden').val(),
 			id			: 0,
-			orderby		: 'item_name',
-			orderfield	: 'ASC',
 			start		: args.start,
 			limit		: args.limit
 		}
@@ -389,27 +351,5 @@ var load_product_list = function(args) { // key, category, id, orderby, orderfie
 }
 
 $(function(){
-	
-	load_categories(0, '', $('#frmVIEWITEM').find('#mnuCategory'), 'dropdown');
-	load_categories(0, '', $('#searchFilter').find('#mnuCategory'), 'dropdown');
-	
-	$('#searchFilter').find('#mnuCategory').on('change',function(){
-		var $this = $(this);
-		var mnuVal = $this.find(':selected').attr('value');
-		var key = $('#searchForm').find('#keyword').val();
-		var pSize = parseInt($('#page_size').attr('alt'));
-		var args = {
-			key			: key,
-			category	: mnuVal,
-			start		: 0,
-			limit		: pSize
-		};
-		
-		$('#page_num').html(1);
-		$this.parents('.form-group').find('.field:hidden').val(mnuVal);
-		
-		window[$('#search_controller').attr('alt')](args);
-		
-	});
 	
 });

@@ -181,49 +181,49 @@
 				throw new Exception('Invalid Parameters!');
 			}
 			
-			$sql = "SELECT * FROM items i, category c WHERE i.item_category = c.category_id ";
-			$count_sql = "SELECT COUNT(*) AS countedRecords FROM items i, category c WHERE i.item_category = c.category_id ";
+			$sql = "SELECT * FROM items i, category c WHERE i.item_category = c.category_id";
+			$count_sql = "SELECT COUNT(*) AS countedRecords FROM items i, category c WHERE i.item_category = c.category_id";
 			
 			if ( isset($args['id']) ) {
 				if ( !empty($args['id']) ) {
-					$sql .= "AND (item_id = '" . $args['id'] . "' OR item_code = '" . $args['id'] . "')";
-					$count_sql .= "AND (item_id = '" . $args['id'] . "' OR item_code = '" . $args['id'] . "')";
+					$sql .= " AND (item_id = '" . $args['id'] . "' OR item_code = '" . $args['id'] . "')";
+					$count_sql .= " AND (item_id = '" . $args['id'] . "' OR item_code = '" . $args['id'] . "')";
 				}
 			}
 			
 			if ( isset($args['key']) ) {
 				if ( !empty($args['key']) ) {
-					$sql .= "AND (item_name LIKE '%" . $args['key'] . "%' || item_desc LIKE '%" . $args['key'] . "%') ";
-					$count_sql .= "AND (item_name LIKE '%" . $args['key'] . "%' || item_desc LIKE '%" . $args['key'] . "%') ";
+					$sql .= " AND (item_name LIKE '%" . $args['key'] . "%' || item_desc LIKE '%" . $args['key'] . "%')";
+					$count_sql .= " AND (item_name LIKE '%" . $args['key'] . "%' || item_desc LIKE '%" . $args['key'] . "%')";
 				}
 			}
 			
 			if ( isset($args['status']) ) {
 				if ( !empty($args['status']) ) {
-					$sql .= "AND item_status = " . $args['status'] . " ";
-					$count_sql .= "AND item_status = " . $args['status'] . " ";
+					$sql .= " AND item_status = " . $args['status'];
+					$count_sql .= " AND item_status = " . $args['status'];
 				}
 			}
 			
 			if ( isset($args['category']) ) {
 				if ( !empty($args['category']) ) {
-					$sql .= "AND i.item_category = " . $args['category'] . " ";
-					$count_sql .= "AND i.item_category = " . $args['category'] . " ";
+					$sql .= " AND i.item_category = " . $args['category'];
+					$count_sql .= " AND i.item_category = " . $args['category'];
 				}
 			}
 			
 			if ( isset($args['orderby']) && isset($args['orderfield']) ) {
 				if ( $args['orderby'] != 'false' && $args['orderfield'] != 'false' ) {
-					$sql .= "ORDER BY " . $args['orderby'] . " " . $args['orderfield'] . " ";
-					$count_sql .= "ORDER BY " . $args['orderby'] . " " . $args['orderfield'] . " ";
+					$sql .= " ORDER BY " . $args['orderby'] . " " . $args['orderfield'];
+					$count_sql .= " ORDER BY " . $args['orderby'] . " " . $args['orderfield'];
 				}
 			}
 			
 			if ( isset($args['start']) && isset($args['limit']) ) {
 				if( $args['start'] == 'false' ) {
-					$sql .= "LIMIT " .$args['limit'];
+					$sql .= " LIMIT " .$args['limit'];
 				} else {
-					$sql .= "LIMIT " . $args['start'] . ", " . $args['limit'];
+					$sql .= " LIMIT " . $args['start'] . ", " . $args['limit'];
 				}
 			}
 			
@@ -271,27 +271,42 @@
 				throw new Exception('Invalid Parameters!');
 			}
 			
-			$sql = "SELECT * from category";
+			$sql = "SELECT * FROM category";
+			$count_sql = "SELECT COUNT(*) AS countedRecords FROM category";
 			
-			if ( isset($args['id']) ) {
+			if ( !empty($args['id']) ) {
 				if ( !empty($args['id']) ) {
-					$sql .= " WHERE item_id = '". $args['id'] . "'";
+					$sql .= " WHERE category_id = '". $args['id'] . "'";
+					$count_sql .= " WHERE category_id = '". $args['id'] . "'";
 				}
-			} else if ( isset($args['key']) ) {
+			} else if ( !empty($args['key']) ) {
 				if ( !empty($args['key']) ) {
 					$sql .= " WHERE (category_name LIKE '%" . $args['key'] . "%' || category_desc LIKE '%" . $args['key'] . "%')";
+					$count_sql .= " WHERE (category_name LIKE '%" . $args['key'] . "%' || category_desc LIKE '%" . $args['key'] . "%')";
 				}
 			}
 			
 			$sql .= " ORDER BY category_name ASC";
+			$count_sql .= " ORDER BY category_name ASC";
+			
+			if ( isset($args['start']) && isset($args['limit']) ) {
+				if( $args['start'] == 'false' ) {
+					$sql .= " LIMIT " .$args['limit'];
+				} else {
+					$sql .= " LIMIT " . $args['start'] . ", " . $args['limit'];
+				}
+			}
 			
 			$res = $link->query($sql);
+			$res2= $link->query($count_sql);
+			$row2 = $res2->fetch_assoc();
 			
 			if ($res->num_rows > 0) {
 				$result['Result'] = '0';
 				$result['Message'] = 'Success';
 				
 				while ($row = $res->fetch_assoc()) {
+					$row['total_rows'] = $row2['countedRecords'];
 					$result['data'][] = $row;
 				}
 			}
@@ -343,6 +358,71 @@
 					}
 					
 					$sql = substr($sql,0,-2) . " WHERE item_id = '" . $args['params']['item_id'] . "'";
+					
+					break;
+					
+				case 'insert':
+					
+					
+					break;
+				
+				default: throw new Exception('Invalid action type.');
+			}
+			
+			$res = $link->query($sql);
+			
+			if ($res) {
+				$result['Result'] = '0';
+				$result['Message'] = 'Success';
+			}
+			
+		} catch (mysqli_sql_exception $e) {
+			$result['Result'] = $link->errno;
+			$result['Message'] = $e->getMessage() . "; " . $sql;
+		} catch (Exception $e) {
+			$result['Message'] = $e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function save_category($args = [], $link = FALSE) {
+		
+		$result = [
+			'Result' => '-1',
+			'Message' => 'Failed to save/update category.'
+		];
+		
+		$sql = "";
+		
+		try {
+			
+			if (!$link) {
+				throw new Exception('No Database Connection');
+			}
+			
+			if (empty($args)) {
+				throw new Exception('Invalid Parameters!');
+			}
+			
+			switch ($args['type']) {
+				case 'update':
+					$except = array('category_id','category_code','category_dateAdded','category_dateModified');
+				
+					$sql = "UPDATE category SET ";
+					
+					foreach ($args['params'] as $idx => $val) {
+						if (!in_array($idx, $except)) {
+							$sql .= $idx . "='" . htmlentities($val, ENT_QUOTES) . "', ";
+						} else {
+							if ($idx == 'category_dateModified') {
+								$val = DBASE_DATE;
+							}
+							$sql .= $idx . "='" . $val . "', ";
+						}
+					}
+					
+					$sql = substr($sql,0,-2) . " WHERE category_id = '" . $args['params']['category_id'] . "'";
 					
 					break;
 					

@@ -76,7 +76,7 @@ function populateSearchWidgetTable (data) {
 			$('.pagination').find('#btnNEXT').prop('disabled', false);
 			
 			if (data.data[0].total_rows < pageSize) {
-				$('.pagination').find('#filter').addClass('hidden');
+				// $('.pagination').find('#filter').addClass('hidden');
 				
 				$('.pagination').find('#btnPREV').prop('disabled', true);
 				$('.pagination').find('#btnNEXT').prop('disabled', true);
@@ -184,13 +184,13 @@ $(function(){
 			$('#search_key').attr('alt',key);
 			
 			var pSize = parseInt($('#page_size').attr('alt'));
-			var pNum = (parseInt($('#page_num').text())-1) * pSize;
 			var args = {
 				key			: key,
-				start		: pNum,
+				start		: 0,
 				limit		: pSize
 			};
 			
+			$('#page_num').html(1);
 			window[$('#search_controller').attr('alt')](args);
 		}
 	});

@@ -109,11 +109,23 @@
 		
 		case 'load_category_list':
 			$args = $_POST;
+			$type = $args['type'] ?? ''; 
 			$result = load_categories($args, $LINK);
 			
 			$response['response'] = $result['Result'] == '0' && !empty($result['data']) ? TRUE : FALSE;
 			$response['message'] = $result['Message'];
 			$response['data'] = $result['data'];
+			
+			if ($type = 'list') {
+				$response['btns'] = [
+							[
+								'type' => 'view_modal',
+								'label' => 'View',
+								'id' => 'category_id',
+								'funct' => 'view_category'
+							]
+						];
+			}
 			
 			header('Content-Type:application/x-json');
 			echo json_encode($response);
@@ -127,6 +139,22 @@
 			$response['response'] = $result['Result'] == '0' ? TRUE : FALSE;
 			$response['message'] = $result['Message'];
 			
+			if ($result['Result'] == '0') {
+				if ($args['oldCat'] != $args['params']['item_category']) {
+					$oldFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['oldCode'] . '.jpg';
+					$newFile = IMAGES_DIR . '/' . $args['newDir'] . '/' . $args['params']['item_code'] . '.jpg';
+					
+					if (file_exists($oldFile)) {
+						copy($oldFile, $newFile);
+						unlink($oldFile);
+					}
+				} else if ($args['oldCode'] != $args['params']['item_code']) {
+					$oldFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['oldCode'] . '.jpg';
+					$newFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['params']['item_code'] . '.jpg';
+					rename($oldFile,$newFile);
+				}
+			}
+			
 			log_activity(
 				$user_data['user_id'],
 				6,
@@ -138,6 +166,63 @@
 			echo json_encode($response);
 			
 			break;
+			
+		case 'update_item_image':
+			$args = $_POST;
+			$file = $_FILES['item_image'];
+			
+			$filepath = IMAGES_DIR . '/' . $args['cat_dir'] . '/' . $args['item_code'] . '.jpg';
+			
+			if ($file['error'] > 0) {
+				$response['message'] = 'File may be corrupted.';
+			} else {
+				if ($file['size'] > 2097152) {
+					$response['message'] = 'File size cannot exceed 2097152 bytes (or 2MB).';
+				} else if ($file['type'] != 'image/jpeg') {
+					$response['message'] = 'Only *.JPG files are allowed.';
+				} else {
+					if (move_uploaded_file($file["tmp_name"], $filepath)) {
+						$response['response'] = TRUE;
+						$response['message'] = 'Successfully updated item image.';
+					} else {
+						$response['message'] = 'Failed to update item image';
+					}
+				}
+			}
+			
+			log_activity(
+				$user_data['user_id'],
+				6,
+				'['.$user_data['username'].'] update_item_image(item_code='.$args['item_code'].'): '.$response['message'],
+				$LINK
+			);
+			
+			header('Content-Type:application/x-json');
+			echo json_encode($response);
+			
+			break;
+		
+		case 'save_category':
+			$args = $_POST;
+			$result = save_category($args, $LINK);
+			
+			$response['response'] = $result['Result'] == '0' ? TRUE : FALSE;
+			$response['message'] = $result['Message'];
+			
+			
+			
+			log_activity(
+				$user_data['user_id'],
+				15,
+				'['.$user_data['username'].'] save_category('.$args['type'].','.$args['params']['category_id'].'): '.$result['Message'],
+				$LINK
+			);
+			
+			header('Content-Type:application/x-json');
+			echo json_encode($response);
+			
+			break;
+			
 		
 		default:
 			
