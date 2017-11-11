@@ -58,7 +58,7 @@
 		<div class="form-group">
 			<label for="item_status">Status:</label>
 			<input type="hidden" class="form-control field" id="item_status" name="item_status" data-old="" />
-			<input type="checkbox" class="form-control" id="item_status_check" name="item_status_check" />
+			<input type="checkbox" class="form-control field" id="item_status_check" name="item_status_check" />
 		</div>
 		<div class="form-group">
 			<label for="item_dateAdded_datepicker">Date Added:</label>

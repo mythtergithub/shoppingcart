@@ -104,9 +104,9 @@ var view_product = function() {
 				.children('div').addClass('thumbnail')
 				.find('#frmItemImage').addClass('image_container')
 				.find('img')
-					.attr('src', imageSrc)
+					.attr('src', 'data:image/jpeg;base64,' + base64Encode(getBinary(imageSrc)))
 					.attr('data-old', imageSrc)
-					.attr('onerror', 'this.src="' + base_url + 'assets/images/no-image.jpg";');
+					// .attr('onerror', 'this.src="' + base_url + 'assets/images/no-image.jpg";');
 			
 			modal.find('#changeImage').bootstrapSwitch({state: false,onText:'Yes',offText:'No'});
 			modal.find('#changeImage').on('switchChange.bootstrapSwitch', function(event, state) {
@@ -121,7 +121,7 @@ var view_product = function() {
 			
 			var fr = new FileReader();
 			
-			fr.addEventListener("load", function () {
+			fr.addEventListener("load", function(){
 				var file = document.querySelector('#generalModal #imgItem').files[0];
 				if (file.size > 2097152) { // 2MB
 					modal.find('.caption').addClass('error').find('.note').html('File size cannot exceed 2097152 bytes (or 2MB).');
@@ -144,6 +144,13 @@ var view_product = function() {
 				var conf = confirm('Are you sure you want to change the item image?');
 				
 				if (conf) {
+					modal.find('.caption').removeClass('error').find('.note').html('');
+					
+					if (!modal.find('#imgItem').val().length) {
+						modal.find('.caption').addClass('error').find('.note').html('Please select an JPEG image.');
+						return;
+					}
+					
 					var data = new FormData();
 					
 					data.append('action', 'update_item_image');
@@ -160,6 +167,8 @@ var view_product = function() {
 						method: 'POST',
 						success: function(data){
 							showAlert('Item Image Update', data.message, modal.find('.alert_group'), (data.response) ? 'success' : 'danger');
+							modal.find('#changeImage').bootstrapSwitch('state', false);
+							document.querySelector('#generalModal #frmItemImage > img').src = fr.result;
 						},
 						error: function(obj, status){
 							showAlert('Item Image Update', 'An error has occured', modal.find('.alert_group'), 'danger');
@@ -178,7 +187,6 @@ var view_product = function() {
 				$.each(modal.find('#frmVIEWITEM').find('.field:input').not(':hidden').not('[readonly]'),function(){
 					
 					$this = $(this);
-					
 					if ($this.attr('type') == 'checkbox') {
 						var oldVal = $this.parents('.form-group').find('.field:hidden').data('old') == 'active' ? true : false;
 						$this.bootstrapSwitch('state', oldVal);
@@ -231,7 +239,7 @@ var view_product = function() {
 				if (error > 0) {
 					showAlert('Failed to Update Item', 'Some required fields are empty.', modal.find('.alert_group'), 'danger');
 				} else {
-					var params = modal.find('.field').serializeArray();
+					var params = modal.find('.field').not(':checkbox').serializeArray();
 					
 					var extra = '_'+id;
 					var extraLength = extra.length;
