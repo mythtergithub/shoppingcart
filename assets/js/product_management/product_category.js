@@ -200,7 +200,7 @@ var view_category = function() {
 				});
 				
 				if (error > 0) {
-					showAlert('Failed to Update Category', 'Some required fields are empty.', modal.find('.alert_group'), 'danger');
+					showAlert('Failed to Update Category', 'Some required fields are invalid.', modal.find('.alert_group'), 'danger');
 				} else {
 					var params = modal.find('.field').serializeArray();
 					
@@ -270,7 +270,7 @@ var view_category = function() {
 										showModal(
 											modal,
 											'Update Category Details',
-											'Failed to update Category details. ' + data.message,
+											'Failed to update Category details.<br />' + data.message,
 											'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 											'show'
 										);
@@ -313,7 +313,7 @@ var view_category = function() {
 								showModal(
 									modal,
 									'Update Category Details',
-									'Failed to update Category details. ' + data.message,
+									'Failed to update Category details.<br />' + data.message,
 									'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 									'show'
 								);

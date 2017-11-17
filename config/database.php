@@ -122,7 +122,7 @@
 		
 	}
 	
-	function count_records($sql = "", $link = FALSE) {
+	function count_records($args = [], $link = FALSE) {
 		
 		$result = [
 			'Result' => '-1',
@@ -136,9 +136,13 @@
 				throw new Exception('No Database Connection');
 			}
 			
-			if (empty($sql)) {
+			if (empty($args) || !isset($args['table'])) {
 				throw new Exception('Invalid Parameters!');
 			}
+			
+			$condition = ( isset($args['condition']) && !empty($args['condition']) ) ? " WHERE " . $args['condition'] : '';
+			
+			$sql = "SELECT COUNT(*) AS countedRecords FROM " . $args['tables'] . $condition;
 			
 			$res = $link->query($sql);
 			
@@ -325,7 +329,8 @@
 		
 		$result = [
 			'Result' => '-1',
-			'Message' => 'Failed to save/update item.'
+			'Message' => 'Failed to save/update item.',
+			'data' => []
 		];
 		
 		$sql = "";
@@ -339,6 +344,8 @@
 			if (empty($args)) {
 				throw new Exception('Invalid Parameters!');
 			}
+			
+			$item_id = '';
 			
 			switch ($args['type']) {
 				case 'update':
@@ -366,18 +373,38 @@
 					
 					break;
 				case 'insert':
+					$item_id = md5($args['params']['item_code'].":".$args['params']['item_name']);
 					
+					$sql = "INSERT INTO items ";
+					$fields = "(item_id, item_dateAdded, item_dateModified, ";
+					$values = " VALUES ('" . $item_id . "', '" . DBASE_DATE . "', '" . DBASE_DATE . "', ";
+					
+					foreach ($args['params'] as $idx => $val) {
+						$fields .= $idx.", ";
+						$values .= "'".$val."', ";
+					}
+					
+					$fields = substr($fields,0,-2) . ")";
+					$values = substr($values,0,-2) . ")";
+					
+					$sql .= $fields.$values;
 					
 					break;
 				
 				default: throw new Exception('Invalid action type.');
 			}
 			
-			$res = $link->query($sql);
-			
-			if ($res) {
-				$result['Result'] = '0';
-				$result['Message'] = 'Success';
+			if (!empty($sql)) {
+				$res = $link->query($sql);
+				
+				if ($res) {
+					$result['Result'] = '0';
+					$result['Message'] = 'Success';
+					
+					$result['data'] = ($args['type'] == 'insert') ? ['item_id' => $item_id] : [];
+				}
+			} else {
+				$result['Message'] = 'Empty query.';
 			}
 			
 		} catch (mysqli_sql_exception $e) {
@@ -438,11 +465,15 @@
 				default: throw new Exception('Invalid action type.');
 			}
 			
-			$res = $link->query($sql);
-			
-			if ($res) {
-				$result['Result'] = '0';
-				$result['Message'] = 'Success';
+			if (!empty($sql)) {
+				$res = $link->query($sql);
+				
+				if ($res) {
+					$result['Result'] = '0';
+					$result['Message'] = 'Success';
+				}
+			} else {
+				$result['Message'] = 'Empty query.';
 			}
 			
 		} catch (mysqli_sql_exception $e) {

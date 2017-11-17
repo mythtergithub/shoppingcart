@@ -37,8 +37,10 @@ var view_product = function() {
 		showModal(modal,title,body,footer,options);
 		
 		const autoNumericOptions = {
-			digitGroupSeparator        : ',',
-			decimalCharacter           : '.',
+			digitGroupSeparator			: ',',
+			decimalCharacter			: '.',
+			minimumValue				: 1,
+			maximumValue				: 999999.99,
 		};
 		var item_price = '';
 		
@@ -247,7 +249,7 @@ var view_product = function() {
 				});
 				
 				if (error > 0) {
-					showAlert('Failed to Update Item', 'Some required fields are empty.', modal.find('.alert_group'), 'danger');
+					showAlert('Failed to Update Item', 'Some required fields are invalid.', modal.find('.alert_group'), 'danger');
 				} else {
 					var params = modal.find('.field').not(':checkbox').serializeArray();
 					
@@ -321,7 +323,7 @@ var view_product = function() {
 										showModal(
 											modal,
 											'Update Item Details',
-											'Failed to update item details. ' + data.message,
+											'Failed to update item details.<br />' + data.message,
 											'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 											'show'
 										);
@@ -366,7 +368,7 @@ var view_product = function() {
 								showModal(
 									modal,
 									'Update Item Details',
-									'Failed to update item details. ' + data.message,
+									'Failed to update item details.<br />' + data.message,
 									'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 									'show'
 								);

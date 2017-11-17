@@ -41,7 +41,7 @@
 
 <body>
 
-	<?php require_once('nav.php'); ?>
+	<?php require_once('views/nav.php'); ?>
 
     <!-- Page Content -->
 	<div class="container<?php echo ($admin == 1) ? '-fluid' : ''; ?>">
@@ -64,7 +64,7 @@
 		
 		<?php
 			foreach ($files as $file) {
-				if (is_readable($file.'.php')) { require_once($file.'.php'); } else { require_once('404.php'); }
+				if (is_readable($file.'.php')) { require_once($file.'.php'); } else { require_once('views/404.php'); }
 			}
 		?>
 		

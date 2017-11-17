@@ -11,7 +11,7 @@
 	color: red !important;
 }
 
-.error input {
+.error input, .error textarea {
 	border: solid thin red !important;
 	color: red !important;
 }

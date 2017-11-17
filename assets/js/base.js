@@ -223,12 +223,4 @@ $(function(){
 		}
 	});
 	
-	const autoNumericOptions = {
-		digitGroupSeparator        : ',',
-		decimalCharacter           : '.',
-	};
-
-	// Initialization
-	new AutoNumeric('[currencyNumber]', autoNumericOptions);
-	
 });

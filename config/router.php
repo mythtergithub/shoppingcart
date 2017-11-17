@@ -208,8 +208,8 @@
 			$page = '404';
 	}
 	
-	$files[] = (!empty($subpage)) ? $page.'/'.$subpage : $page;
+	$files[] = (!empty($subpage)) ? 'views/'.$page.'/'.$subpage : 'views/'.$page;
 	if ($has_search) {
-		$files[] = 'search-widget';
+		$files[] = 'views/search-widget';
 	}
 ?>

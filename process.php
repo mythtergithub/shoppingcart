@@ -144,25 +144,42 @@
 			$response['response'] = $result['Result'] == '0' ? TRUE : FALSE;
 			$response['message'] = $result['Message'];
 			
+			$log_type = 6;
+			
 			if ($result['Result'] == '0') {
-				if ($args['oldCat'] != $args['params']['item_category']) {
-					$oldFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['oldCode'] . '.jpg';
-					$newFile = IMAGES_DIR . '/' . $args['newDir'] . '/' . $args['params']['item_code'] . '.jpg';
+				
+				switch ($args['type']) {
+					case 'update':
+						if ($args['oldCat'] != $args['params']['item_category']) {
+							$oldFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['oldCode'] . '.jpg';
+							$newFile = IMAGES_DIR . '/' . $args['newDir'] . '/' . $args['params']['item_code'] . '.jpg';
+							
+							if (file_exists($oldFile)) {
+								copy($oldFile, $newFile);
+								unlink($oldFile);
+							}
+						} else if ($args['oldCode'] != $args['params']['item_code']) {
+							$oldFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['oldCode'] . '.jpg';
+							$newFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['params']['item_code'] . '.jpg';
+							rename($oldFile,$newFile);
+						}
+						
+						break;
+						
+					case 'insert':
+						$args['params']['item_id'] = $result['data']['item_id'];
+						$log_type = 5;
+						break;
+						
+					default:
 					
-					if (file_exists($oldFile)) {
-						copy($oldFile, $newFile);
-						unlink($oldFile);
-					}
-				} else if ($args['oldCode'] != $args['params']['item_code']) {
-					$oldFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['oldCode'] . '.jpg';
-					$newFile = IMAGES_DIR . '/' . $args['oldDir'] . '/' . $args['params']['item_code'] . '.jpg';
-					rename($oldFile,$newFile);
+						break;
 				}
 			}
 			
 			log_activity(
 				$user_data['user_id'],
-				6,
+				$log_type,
 				'['.$user_data['username'].'] save_item('.$args['type'].','.$args['params']['item_id'].'): '.$result['Message'],
 				$LINK
 			);

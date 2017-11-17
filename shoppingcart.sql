@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 10, 2017 at 11:39 AM
+-- Generation Time: Nov 17, 2017 at 07:25 AM
 -- Server version: 10.1.13-MariaDB
 -- PHP Version: 7.0.8
 
@@ -54,7 +54,7 @@ INSERT INTO `activity_type` (`type_id`, `type_name`) VALUES
 (2, 'PROFILE_CREATION'),
 (3, 'PROFILE_UPDATE'),
 (4, 'PROFILE_DEACTIVATION'),
-(5, 'ITEM_UPLOAD'),
+(5, 'ITEM_ADD'),
 (6, 'ITEM_UPDATE'),
 (7, 'CART_ADD'),
 (8, 'CART_REMOVE'),
@@ -87,12 +87,12 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`category_id`, `category_code`, `category_name`, `category_desc`, `directory`, `category_dateAdded`, `category_dateModified`) VALUES
-(1, 'MENW', 'Men''s Wear and Accessories', 'Latest trends for men''s wear and accessories', 'MEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
-(2, 'WMENW', 'Women''s Wear and Accessories', 'Latest trends for women''s wear and accessories', 'WOMEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
-(3, 'MENFW', 'Men''s Footwear', 'Latest trends in men''s footwear', 'MEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
-(4, 'WMENFW', 'Women''s Footwear', 'Latest trends in women''s footwear', 'WOMEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
-(5, 'KIDSW', 'Kid''s Wear and Acccessories', 'Latest trends in kid''s wear and accessories', 'KIDS', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
-(6, 'KIDSFW', 'Kid''s Footwear', 'Latest trends in kid''s footwear', 'KIDS', '2017-11-10 18:37:22', '2017-11-10 18:37:22');
+(1, 'MENW', 'Men&#039;s Wear and Accessories', 'Latest trends for men&#039;s wear and accessories', 'MEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
+(2, 'WMENW', 'Women&#039;s Wear and Accessories', 'Latest trends for women&#039;s wear and accessories', 'WOMEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
+(3, 'MENFW', 'Men&#039;s Footwear', 'Latest trends in men&#039;s footwear', 'MEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
+(4, 'WMENFW', 'Women&#039;s Footwear', 'Latest trends in women&#039;s footwear', 'WOMEN', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
+(5, 'KIDSW', 'Kid&#039;s Wear and Acccessories', 'Latest trends in kid&#039;s wear and accessories', 'KIDS', '2017-11-10 18:37:22', '2017-11-10 18:37:22'),
+(6, 'KIDSFW', 'Kid&#039;s Footwear', 'Latest trends in kid&#039;s footwear', 'KIDS', '2017-11-10 18:37:22', '2017-11-16 17:47:29');
 
 -- --------------------------------------------------------
 
@@ -105,9 +105,10 @@ CREATE TABLE `items` (
   `item_code` varchar(45) NOT NULL,
   `item_name` varchar(100) NOT NULL,
   `item_desc` varchar(255) NOT NULL,
+  `item_price` decimal(6,2) NOT NULL DEFAULT '0.00',
   `item_category` int(11) NOT NULL,
   `item_dateAdded` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `item_dateModified` datetime NOT NULL,
+  `item_dateModified` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `item_status` tinyint(4) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -115,13 +116,14 @@ CREATE TABLE `items` (
 -- Dumping data for table `items`
 --
 
-INSERT INTO `items` (`item_id`, `item_code`, `item_name`, `item_desc`, `item_category`, `item_dateAdded`, `item_dateModified`, `item_status`) VALUES
-('10a4cedabebff438e243737e2c6587c7', 'KIDSFW-001', 'Sporty Shoes-Western', 'Comfy and sporty shoes for your energetic kids', 6, '2017-10-24 14:51:35', '2017-10-24 14:51:35', 1),
-('3b342724bf9fc4c953a27a871af9291a', 'MENW-001', 'Polo Shirt-Western', 'Western inspired polo shirts', 1, '2017-10-23 09:42:35', '2017-10-23 09:42:35', 1),
-('5b8891789f0b9cfd6243b2045f23aa1c', 'WMENW-001', 'Blouse-Western', 'Western-styled blouses', 2, '2017-10-23 09:40:35', '2017-11-10 11:54:31', 1),
-('72996e6feda4bbbc71b0f573d5ddf9dd', 'WMENFW-001', 'Floral Hi-Heeled Wedge-Western', 'A floral design, high-heeled wedge sandals for the Western summer', 4, '2017-10-24 10:15:35', '2017-10-24 10:15:35', 1),
-('a429d0918bebebb4e2fc7b6dd95abbaa', 'KIDSW-001', 'Top Set Navy Blue Wear-Western', 'A Navy Blue chaleco and jacket for your kid&#039;s top set', 5, '2017-10-24 14:51:35', '2017-10-24 14:51:35', 1),
-('cd753bdbca05ec235759a741bbec9db3', 'MENFW-001', 'Hi-Cut Denim Shoes-Western', 'Western denim shoes in hi-cut fashion', 3, '2017-10-24 10:04:35', '2017-10-24 10:04:35', 1);
+INSERT INTO `items` (`item_id`, `item_code`, `item_name`, `item_desc`, `item_price`, `item_category`, `item_dateAdded`, `item_dateModified`, `item_status`) VALUES
+('1054ea6342e93233e66afe6ff8d78be0', 'KIDSFW-002', 'Test Item', 'This is a test item', '3300.00', 6, '2017-11-17 14:22:51', '2017-11-17 14:22:51', 1),
+('10a4cedabebff438e243737e2c6587c7', 'KIDSFW-001', 'Sporty Shoes-Western', 'Comfy and sporty shoes for your energetic kids', '599.00', 6, '2017-10-24 14:51:35', '2017-10-24 14:51:35', 1),
+('3b342724bf9fc4c953a27a871af9291a', 'MENW-001', 'Polo Shirt-Western', 'Western inspired polo shirts', '399.00', 1, '2017-10-23 09:42:35', '2017-10-23 09:42:35', 1),
+('5b8891789f0b9cfd6243b2045f23aa1c', 'WMENW-001', 'Blouse-Western', 'Western-styled blouses', '299.00', 2, '2017-10-23 09:40:35', '2017-11-11 15:41:43', 1),
+('72996e6feda4bbbc71b0f573d5ddf9dd', 'WMENFW-001', 'Floral Hi-Heeled Wedge-Western', 'A floral design, high-heeled wedge sandals for the Western summer', '549.00', 4, '2017-10-24 10:15:35', '2017-10-24 10:15:35', 1),
+('a429d0918bebebb4e2fc7b6dd95abbaa', 'KIDSW-001', 'Top Set Navy Blue Wear-Western', 'A Navy Blue chaleco and jacket for your kid&#039;s top set', '249.00', 5, '2017-10-24 14:51:35', '2017-10-24 14:51:35', 1),
+('cd753bdbca05ec235759a741bbec9db3', 'MENFW-001', 'Hi-Cut Denim Shoes-Western', 'Western denim shoes in hi-cut fashion', '899.00', 3, '2017-10-24 10:04:35', '2017-10-24 10:04:35', 1);
 
 -- --------------------------------------------------------
 
