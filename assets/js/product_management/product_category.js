@@ -28,7 +28,6 @@ var view_category = function() {
 			
 			body = $('#modalContent').html();
 			footer = $('#modalContent .buttons').html();
-			
 			options = {backdrop: "static"};
 			
 		}
@@ -59,7 +58,7 @@ var view_category = function() {
 			})
 			
 			modal.find('[for="category_dateAdded_datepicker"]').attr('for','category_dateAdded_datepicker_'+id);
-			modal.find('[for="category_dateAdded_datepicker"]').attr('for','category_dateAdded_datepicker_'+id);
+			modal.find('[for="category_dateModified_datepicker"]').attr('for','category_dateModified_datepicker_'+id);
 			
 			var imageSrc = base_url + 'assets/images/' + data.data[0]['category_code'] + '.jpg';
 			
@@ -68,13 +67,13 @@ var view_category = function() {
 				.children('div').addClass('thumbnail')
 				.find('#frmCategoryImage').addClass('image_container')
 				.find('img')
-					.attr('src', imageSrc)
+					.attr('src', 'data:image/jpeg;base64,' + base64Encode(getBinary(imageSrc)))
 					.attr('data-old', imageSrc)
 					.attr('onerror', 'this.src="' + base_url + 'assets/images/no-image.jpg";');
 			
 			modal.find('#changeImage').bootstrapSwitch({state: false,onText:'Yes',offText:'No'});
 			modal.find('#changeImage').on('switchChange.bootstrapSwitch', function(event, state) {
-				modal.find('#imgItem').prop('disabled',!state);
+				modal.find('#imgCategory').prop('disabled',!state);
 				modal.find('#btnRESETPIC').prop('disabled',!state);
 				modal.find('#btnUPDATEPIC').prop('disabled',!state);
 				
@@ -86,7 +85,7 @@ var view_category = function() {
 			var fr = new FileReader();
 			
 			fr.addEventListener("load", function () {
-				var file = document.querySelector('#generalModal #imgItem').files[0];
+				var file = document.querySelector('#generalModal #imgCategory').files[0];
 				if (file.size > 2097152) { // 2MB
 					modal.find('.caption').addClass('error').find('.note').html('File size cannot exceed 2097152 bytes (or 2MB).');
 				} else if (file.type == 'image/jpeg' || file.type == 'image/jpg') {
@@ -97,8 +96,8 @@ var view_category = function() {
 				}
 			}, false);
 			
-			modal.find('#imgItem').on('change',function(){
-				var file = document.querySelector('#generalModal #imgItem').files[0];
+			modal.find('#imgCategory').on('change',function(){
+				var file = document.querySelector('#generalModal #imgCategory').files[0];
 				if (file) {
 					fr.readAsDataURL(file);
 				}
@@ -108,12 +107,18 @@ var view_category = function() {
 				var conf = confirm('Are you sure you want to change the Category image?');
 				
 				if (conf) {
+					modal.find('.caption').removeClass('error').find('.note').html('');
+					
+					if (!modal.find('#imgCategory').val().length) {
+						modal.find('.caption').addClass('error').find('.note').html('Please select a JPEG image.');
+						return;
+					}
+					
 					var data = new FormData();
 					
 					data.append('action', 'update_category_image');
-					data.append('category_image', document.querySelector('#generalModal #imgItem').files[0]);
+					data.append('category_image', document.querySelector('#generalModal #imgCategory').files[0]);
 					data.append('category_code', modal.find('#category_code_'+id).data('old'));
-					data.append('cat_dir', modal.find('#mnuCategory').find('[value="' + modal.find('#category_category_'+id).data('old') + '"]').data('dir'));
 					
 					$.ajax({
 						url: base_url + 'process.php',
@@ -124,6 +129,8 @@ var view_category = function() {
 						method: 'POST',
 						success: function(data){
 							showAlert('Category Image Update', data.message, modal.find('.alert_group'), (data.response) ? 'success' : 'danger');
+							modal.find('#changeImage').bootstrapSwitch('state', false);
+							document.querySelector('#generalModal #frmCategoryImage > img').src = fr.result;
 						},
 						error: function(obj, status){
 							showAlert('Category Image Update', 'An error has occured', modal.find('.alert_group'), 'danger');
@@ -134,12 +141,12 @@ var view_category = function() {
 			
 			modal.find('#btnRESETPIC').on('click',function(){
 				modal.find('#frmCategoryImage > img').attr('src', modal.find('#frmCategoryImage > img').data('old'));
-				modal.find('#imgItem').val(null);
+				modal.find('#imgCategory').val(null);
 				modal.find('.caption').removeClass('error').find('.note').html('');
 			});
 			
 			modal.find('#btnRESET').on('click',function(){
-				$.each(modal.find('#frmVIEWITEM').find('.field:input').not(':hidden').not('[readonly]'),function(){
+				$.each(modal.find('#frmVIEWCATEGORY').find('.field:input').not(':hidden').not('[readonly]'),function(){
 					
 					$this = $(this);
 					
@@ -208,8 +215,6 @@ var view_category = function() {
 					});
 					
 					params = formToArray(params);
-					params['category_code'] = modal.find('#category_code').text() + '-' + params['category_code'];
-					params['category_status'] = params['category_status'] == 'active' ? '1' : '0';
 					
 					if (modal.find('.field#category_code_'+id).data('old') != params['category_code']) {
 						
@@ -227,8 +232,8 @@ var view_category = function() {
 							}
 						).done(function(data){
 							if (data.response) {
-								modal.find('.field#category_code_'+id).parents('.form-group').addClass('error').find('.note').html('Category Code must be unique.');
-								showAlert('Failed to Update Item', 'Category Code must be unique.', modal.find('.alert_group'), 'danger');
+								modal.find('.field#category_code_'+id).parents('.form-group').addClass('error').find('.note').html('Category Code already exists.');
+								showAlert('Failed to Update Category', 'Category Code already exists.', modal.find('.alert_group'), 'danger');
 							} else {
 								modal.find('.field#category_code_'+id).parents('.form-group').removeClass('error').find('.note').html('');
 								
@@ -238,9 +243,7 @@ var view_category = function() {
 										action		: 'save_category',
 										type		: 'update',
 										oldCode		: modal.find('#category_code_'+id).data('old'),
-										oldCat		: modal.find('#category_category_'+id).data('old'),
-										oldDir		: modal.find('#mnuCategory').find('[value="' + modal.find('#category_category_'+id).data('old') + '"]').data('dir'),
-										newDir		: modal.find('#mnuCategory').find(':selected').data('dir'),
+										oldDir		: modal.find('#directory_'+id).data('old'),
 										params		: params
 									}
 								).done(function(data){
@@ -259,7 +262,7 @@ var view_category = function() {
 										var pSize = parseInt($('#page_size').attr('alt'));
 										var pNum = (parseInt($('#page_num').text())-1) * pSize;
 										
-										load_product_list('',0,0,'category_name','ASC',pNum,pSize);
+										load_category_list('',0,0,'category_name','ASC',pNum,pSize);
 									} else {
 								
 										modal.find('.modal-dialog').removeClass('modal-lg');
@@ -283,9 +286,7 @@ var view_category = function() {
 								action		: 'save_category',
 								type		: 'update',
 								oldCode		: modal.find('#category_code_'+id).data('old'),
-								oldCat		: modal.find('#category_category_'+id).data('old'),
-								oldDir		: modal.find('#mnuCategory').find('[value="' + modal.find('#category_category_'+id).data('old') + '"]').data('dir'),
-								newDir		: modal.find('#mnuCategory').find(':selected').data('dir'),
+								oldDir		: modal.find('#directory_'+id).data('old'),
 								params		: params
 							}
 						).done(function(data){
@@ -304,7 +305,7 @@ var view_category = function() {
 								var pSize = parseInt($('#page_size').attr('alt'));
 								var pNum = (parseInt($('#page_num').text())-1) * pSize;
 								
-								load_product_list('',0,0,'category_name','ASC',pNum,pSize);
+								load_category_list('',0,0,'category_name','ASC',pNum,pSize);
 							} else {
 								
 								modal.find('.modal-dialog').removeClass('modal-lg');

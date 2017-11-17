@@ -36,6 +36,12 @@ var view_product = function() {
 		}
 		showModal(modal,title,body,footer,options);
 		
+		const autoNumericOptions = {
+			digitGroupSeparator        : ',',
+			decimalCharacter           : '.',
+		};
+		var item_price = '';
+		
 		if (data.response) {
 			modal.find('.modal-body').find('#frmVIEWITEM').removeClass('hidden');
 			modal.find('.modal-body').find('.buttons').empty();
@@ -56,6 +62,8 @@ var view_product = function() {
 							$(this).parents('.form-group').addClass('error').find('.note').html('Only digits and letters are allowed.');
 						}
 					});
+				} else if (item_field.attr('name') == 'item_price') {
+					item_price = new AutoNumeric('.modal-body [name="item_price"]', autoNumericOptions);
 				}
 				
 				item_field.attr( 'data-old', data.data[0][item_field.attr('name')] );
@@ -106,7 +114,7 @@ var view_product = function() {
 				.find('img')
 					.attr('src', 'data:image/jpeg;base64,' + base64Encode(getBinary(imageSrc)))
 					.attr('data-old', imageSrc)
-					// .attr('onerror', 'this.src="' + base_url + 'assets/images/no-image.jpg";');
+					.attr('onerror', 'this.src="' + base_url + 'assets/images/no-image.jpg";');
 			
 			modal.find('#changeImage').bootstrapSwitch({state: false,onText:'Yes',offText:'No'});
 			modal.find('#changeImage').on('switchChange.bootstrapSwitch', function(event, state) {
@@ -147,7 +155,7 @@ var view_product = function() {
 					modal.find('.caption').removeClass('error').find('.note').html('');
 					
 					if (!modal.find('#imgItem').val().length) {
-						modal.find('.caption').addClass('error').find('.note').html('Please select an JPEG image.');
+						modal.find('.caption').addClass('error').find('.note').html('Please select a JPEG image.');
 						return;
 					}
 					
@@ -194,10 +202,12 @@ var view_product = function() {
 						
 						$this.val($this.data('old'));
 						
-						if ($this.attr('name') == 'item_code_'+id) {							
+						if ($this.attr('name') == 'item_code_'+id) {
 							var val = $this.data('old').split('-');
 							$this.prev().children('#category_code').html(val[0]);
 							$this.val( val[1] );
+						} else if ($this.attr('name') == 'item_price_'+id) {
+							item_price.clear().set($this.data('old'));
 						}
 						
 					}
@@ -271,8 +281,8 @@ var view_product = function() {
 							}
 						).done(function(data){
 							if (data.response) {
-								modal.find('.field#item_code_'+id).parents('.form-group').addClass('error').find('.note').html('Item Code must be unique.');
-								showAlert('Failed to Update Item', 'Item Code must be unique.', modal.find('.alert_group'), 'danger');
+								modal.find('.field#item_code_'+id).parents('.form-group').addClass('error').find('.note').html('Item Code already exists.');
+								showAlert('Failed to Update Item', 'Item Code already exists.', modal.find('.alert_group'), 'danger');
 							} else {
 								modal.find('.field#item_code_'+id).parents('.form-group').removeClass('error').find('.note').html('');
 								

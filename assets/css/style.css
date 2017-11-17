@@ -20,6 +20,10 @@
 	font-size: 10px;
 }
 
+.align-right {
+	text-align: right !important;
+}
+
 .hidden {
 	visibility: hidden;
 }

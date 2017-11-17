@@ -111,6 +111,7 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="assets/js/moment.min.js"></script>
+    <script src="assets/js/autoNumeric.min.js"></script>
     <script src="assets/js/bootstrap.min.js"></script>
     <script src="assets/js/bootstrap-switch.min.js"></script>
     <script src="assets/js/bootstrap-datetimepicker.min.js"></script>

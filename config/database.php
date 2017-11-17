@@ -360,7 +360,11 @@
 					$sql = substr($sql,0,-2) . " WHERE item_id = '" . $args['params']['item_id'] . "'";
 					
 					break;
+				
+				case 'update_code':
+					$sql = "UPDATE items SET item_code = '" . $args['params']['item_code'] . "' WHERE item_id = '" . $args['params']['item_id'] . "'";
 					
+					break;
 				case 'insert':
 					
 					
@@ -407,7 +411,7 @@
 			
 			switch ($args['type']) {
 				case 'update':
-					$except = array('category_id','category_code','category_dateAdded','category_dateModified');
+					$except = array('category_id','category_code','directory','category_dateAdded','category_dateModified');
 				
 					$sql = "UPDATE category SET ";
 					

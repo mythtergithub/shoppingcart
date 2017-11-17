@@ -40,12 +40,13 @@
 		</div>
 		<div class="form-group">
 			<label for="category_desc">Description:</label>
-			<input type="text" class="form-control field" id="category_desc" name="category_desc" data-old="" placeholder="Category Description" data-required="Please provide Category Description" />
+			<!--<input type="text" class="form-control field" id="category_desc" name="category_desc" data-old="" placeholder="Category Description" data-required="Please provide Category Description" />-->
+			<textarea class="form-control field" id="category_desc" name="category_desc" data-old="" placeholder="Category Description" data-required="Please provide Category Description"></textarea>
 			<span class="note"></span>
 		</div>
 		<div class="form-group">
 			<label for="category_desc">Directory Name (for Item Images)</label>
-			<input type="text" class="form-control field" id="directory" name="directory" data-old="" placeholder="Category Directory Name" data-required="Please provide Category Directory Name" alphaNumeric />
+			<input type="text" class="form-control field" id="directory" name="directory" data-old="" placeholder="Category Directory Name" data-required="Please provide Category Directory Name" alphaNumeric readonly />
 			<span class="note"></span>
 		</div>
 		<div class="form-group">

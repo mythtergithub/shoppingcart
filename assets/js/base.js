@@ -45,9 +45,8 @@ function showModal(modal, header, body, footer, options) {
 	modal.find('.modal-body').empty();
 	modal.find('.modal-body').append(body);
 	
-	if (footer.length || modal.find('.modal-footer button').length == 1) {
-		modal.find('.modal-footer').html(footer);
-	}
+	modal.find('.modal-footer').empty();
+	modal.find('.modal-footer').html(footer);
 	
 	modal.modal(options);
 }
@@ -223,5 +222,13 @@ $(function(){
 			$(this).parents('.form-group').addClass('error').find('.note').html('Only digits and letters are allowed.');
 		}
 	});
+	
+	const autoNumericOptions = {
+		digitGroupSeparator        : ',',
+		decimalCharacter           : '.',
+	};
+
+	// Initialization
+	new AutoNumeric('[currencyNumber]', autoNumericOptions);
 	
 });

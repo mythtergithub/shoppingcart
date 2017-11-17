@@ -45,7 +45,13 @@
 		</div>
 		<div class="form-group">
 			<label for="item_desc">Description:</label>
-			<input type="text" class="form-control field" id="item_desc" name="item_desc" data-old="" placeholder="Item Description" data-required="Please provide Item Description" />
+			<!--<input type="text" class="form-control field" id="item_desc" name="item_desc" data-old="" placeholder="Item Description" data-required="Please provide Item Description" />-->
+			<textarea class="form-control field" id="item_desc" name="item_desc" data-old="" placeholder="Item Description" data-required="Please provide Item Description"></textarea>
+			<span class="note"></span>
+		</div>
+		<div class="form-group">
+			<label for="item_name">Item Price:</label>
+			<input type="text" class="form-control field" id="item_price" name="item_price" data-old="" placeholder="Item Price" data-required="Please provide Item Price" currencyNumber />
 			<span class="note"></span>
 		</div>
 		<div class="form-group">
