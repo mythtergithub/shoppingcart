@@ -5,7 +5,7 @@
 	session_start();
 	
 	if (!function_exists('debug')){
-		function debug($var, $die) {
+		function debug($var, $die = TRUE) {
 			echo '<pre>';
 			var_dump($var);
 			echo '</pre>';

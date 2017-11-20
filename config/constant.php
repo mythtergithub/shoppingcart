@@ -34,8 +34,9 @@
 				'title' => 'Product Management',
 				'items' => [
 					'product_list' => 'Product List',
-					'product_add' => 'Add New Product',
 					'product_category' => 'Product Categories',
+					'product_add' => 'Add New Product',
+					'product_category_add' => 'Add New Category',
 					'product_report' => 'Product Report'
 				]
 			],

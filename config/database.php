@@ -283,6 +283,11 @@
 					$sql .= " WHERE category_id = '". $args['id'] . "'";
 					$count_sql .= " WHERE category_id = '". $args['id'] . "'";
 				}
+			} else if ( !empty($args['code']) ) {
+				if ( !empty($args['code']) ) {
+					$sql .= " WHERE category_code = '". $args['code'] . "'";
+					$count_sql .= " WHERE category_code = '". $args['code'] . "'";
+				}
 			} else if ( !empty($args['key']) ) {
 				if ( !empty($args['key']) ) {
 					$sql .= " WHERE (category_name LIKE '%" . $args['key'] . "%' || category_desc LIKE '%" . $args['key'] . "%')";
@@ -421,7 +426,8 @@
 		
 		$result = [
 			'Result' => '-1',
-			'Message' => 'Failed to save/update category.'
+			'Message' => 'Failed to save/update category.',
+			'data' => []
 		];
 		
 		$sql = "";
@@ -458,7 +464,19 @@
 					break;
 					
 				case 'insert':
+					$sql = "INSERT INTO category ";
+					$fields = "(category_dateAdded, category_dateModified, ";
+					$values = " VALUES ('" . DBASE_DATE . "', '" . DBASE_DATE . "', ";
 					
+					foreach ($args['params'] as $idx => $val) {
+						$fields .= $idx.", ";
+						$values .= "'".$val."', ";
+					}
+					
+					$fields = substr($fields,0,-2) . ")";
+					$values = substr($values,0,-2) . ")";
+					
+					$sql .= $fields.$values;
 					
 					break;
 				
@@ -471,6 +489,11 @@
 				if ($res) {
 					$result['Result'] = '0';
 					$result['Message'] = 'Success';
+					
+					if ($args['type'] == 'insert') {
+						$res2 = load_categories(['code' => $args['params']['category_code']], $link);
+						$result['data']['category_id'] = $res2['data'][0]['category_id'] ?? '0';
+					}
 				}
 			} else {
 				$result['Message'] = 'Empty query.';

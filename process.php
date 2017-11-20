@@ -144,10 +144,9 @@
 			$response['response'] = $result['Result'] == '0' ? TRUE : FALSE;
 			$response['message'] = $result['Message'];
 			
-			$log_type = 6;
+			$log_type = ($args['type'] == 'update') ? 6 : 5;
 			
 			if ($result['Result'] == '0') {
-				
 				switch ($args['type']) {
 					case 'update':
 						if ($args['oldCat'] != $args['params']['item_category']) {
@@ -168,7 +167,6 @@
 						
 					case 'insert':
 						$args['params']['item_id'] = $result['data']['item_id'];
-						$log_type = 5;
 						break;
 						
 					default:
@@ -180,7 +178,7 @@
 			log_activity(
 				$user_data['user_id'],
 				$log_type,
-				'['.$user_data['username'].'] save_item('.$args['type'].','.$args['params']['item_id'].'): '.$result['Message'],
+				'['.$user_data['username'].'] save_item('.$args['type'].','.($args['params']['item_id'] ?? '0').'): '.$result['Message'],
 				$LINK
 			);
 			
@@ -231,61 +229,82 @@
 			$response['response'] = $result['Result'] == '0' ? TRUE : FALSE;
 			$response['message'] = $result['Message'];
 			
+			$log_type = ($args['type'] == 'update') ? 15 : 14;
+			
 			if ($result['Result'] == '0') {
-				$dir = ($args['oldDir'] != $args['params']['directory']) ? $args['params']['directory'] : $args['oldDir'];
-				
-				// if ($args['oldDir'] != $args['params']['directory']) {
-					// $oldFolder = IMAGES_DIR . '/' . $args['oldDir'];
-					// $newFolder = IMAGES_DIR . '/' . $args['params']['directory'];
-					
-					// if (!file_exists($newFolder)) {
-						// rename($oldFolder, $newFolder);
-					// }
-				// }
-				
-				if ($args['oldCode'] != $args['params']['category_code']) {
-					$prod_list_res = load_products(
-						[
-							'category' => $args['params']['category_id']
-						],
-						$LINK
-					);
-					if ($prod_list_res['Result'] == '0' && !empty($prod_list_res['data'])) {
-						foreach ($prod_list_res['data'] as $idx => $val) {
-							$itemCode = explode('-', $val['item_code'])[1];
-							$newCode = $args['params']['category_code'] . '-' . $itemCode;
+				switch($args['type']) {
+					case 'update':
+						$dir = ($args['oldDir'] != $args['params']['directory']) ? $args['params']['directory'] : $args['oldDir'];
+						
+						// if ($args['oldDir'] != $args['params']['directory']) {
+							// $oldFolder = IMAGES_DIR . '/' . $args['oldDir'];
+							// $newFolder = IMAGES_DIR . '/' . $args['params']['directory'];
 							
-							save_item(
+							// if (!file_exists($newFolder)) {
+								// rename($oldFolder, $newFolder);
+							// }
+						// }
+						
+						if ($args['oldCode'] != $args['params']['category_code']) {
+							$prod_list_res = load_products(
 								[
-									'type' => 'update_code',
-									'params' => [
-										'item_code' => $newCode,
-										'item_id' => $val['item_id']
-									]
+									'category' => $args['params']['category_id']
 								],
 								$LINK
 							);
-							
-							$oldFile = IMAGES_DIR . '/' . $dir . '/' . $args['oldCode'] . '.jpg';
-							$newFile = IMAGES_DIR . '/' . $dir . '/' . $newCode . '.jpg';
-							
-							rename($oldFile, $newFile);
-							
-							log_activity(
-								$user_data['user_id'],
-								6,
-								'['.$user_data['username'].'] save_item(update_code,'.$args['params']['category_code'].'): '.$result['Message'],
-								$LINK
-							);
+							if ($prod_list_res['Result'] == '0' && !empty($prod_list_res['data'])) {
+								foreach ($prod_list_res['data'] as $idx => $val) {
+									$itemCode = explode('-', $val['item_code'])[1];
+									$newCode = $args['params']['category_code'] . '-' . $itemCode;
+									
+									save_item(
+										[
+											'type' => 'update_code',
+											'params' => [
+												'item_code' => $newCode,
+												'item_id' => $val['item_id']
+											]
+										],
+										$LINK
+									);
+									
+									$oldFile = IMAGES_DIR . '/' . $dir . '/' . $args['oldCode'] . '.jpg';
+									$newFile = IMAGES_DIR . '/' . $dir . '/' . $newCode . '.jpg';
+									
+									rename($oldFile, $newFile);
+									
+									log_activity(
+										$user_data['user_id'],
+										6,
+										'['.$user_data['username'].'] save_item(update_code,'.$args['params']['category_code'].'): '.$result['Message'],
+										$LINK
+									);
+								}
+							}
 						}
-					}
+						
+						break;
+						
+					case 'insert':
+						$args['params']['category_id'] = $result['data']['category_id'] ?? '0';
+						
+						$newFolder = IMAGES_DIR . '/' . $args['params']['directory'];
+						
+						if (!file_exists($newFolder)) {
+							mkdir($newFolder);
+						}
+						break;
+						
+					default:
+					
+						break;
 				}
 			}
 			
 			log_activity(
 				$user_data['user_id'],
-				15,
-				'['.$user_data['username'].'] save_category('.$args['type'].','.$args['params']['category_id'].'): '.$result['Message'],
+				$log_type,
+				'['.$user_data['username'].'] save_category('.$args['type'].','. ($args['params']['category_id'] ?? '0').'): '.$result['Message'],
 				$LINK
 			);
 			
