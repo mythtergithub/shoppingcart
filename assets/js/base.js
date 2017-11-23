@@ -124,6 +124,8 @@ function load_products(key, category, id, status, orderby, orderfield, start, li
 						);
 				obj.append(item)
 			});
+		} else {
+			obj.html('No results found.');
 		}
 		
 		if ($('.page').attr('alt') == 'home') {

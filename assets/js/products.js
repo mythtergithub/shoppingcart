@@ -1,7 +1,13 @@
 $(function(){
 	var pageSize = 4;
 	
-	load_products('',0,0,1,'item_name','ASC',false,pageSize,$('#product_list'),true);
+	$(document).ready(function(){
+		if ($.trim($('#searchForm').find('#keyword').val()) != '') {
+			$('#searchForm').find('#btnSEARCH').click();	
+		} else {
+			load_products('',0,0,1,'item_name','ASC',false,pageSize,$('#product_list'),true);
+		}
+	});
 	
 	$('#sidemenuCategories').find('li:first').addClass('active');
 	

@@ -8,6 +8,7 @@
 	$css_files = [];
 	$data = [];
 	$has_search = FALSE;
+	$search_key = '';
 	
 	$user_data = [];
 	if (validate_session()) {
@@ -23,11 +24,13 @@
 	
 	switch ($page) {
 		case 'home':
-			// $javascript_files[] = '<script src="assets/js/'.$page.'.js"></script>';
+			$javascript_files[] = '<script src="assets/js/'.$page.'.js"></script>';
 			break;
 			
 		case 'products':
 			authenticate_user($type, $page);
+			
+			$search_key = $_POST['keyword'] ?? '';
 			
 			require_once('database.php');
 			

@@ -9,11 +9,11 @@
 <div class="jumbotron text-center">
   <h1>The Shopping Cart</h1> 
   <p>The latest trends on the latest apparels and accessories...Shop Now!</p> 
-  <form class="form-inline">
+  <form class="form-inline" id="searchForm" method="post" action="?page=products">
     <div class="input-group">
-      <input class="form-control" size="50" placeholder="Search here..." required="" type="text">
+      <input class="form-control" size="50" placeholder="Search here..." required="" type="text" id="keyword" name="keyword">
       <div class="input-group-btn">
-        <button class="btn btn-default" type="button">
+        <button class="btn btn-default" type="button" id="btnSEARCH">
 		  <span class="glyphicon glyphicon-search"></span>
 		</button>
       </div>
@@ -26,7 +26,7 @@
 <!-- Title -->
 <div class="row">
 	<div class="col-lg-12">
-		<h3>Latest Features</h3>
+		<h3>Latest Trends</h3>
 	</div>
 </div>
 <!-- /.row -->
