@@ -16,6 +16,9 @@ function showAlert(title, content, obj, type) {
 
 function clearAlert(obj) {
 	obj.addClass('hidden').empty();
+	$('html, body').animate({
+		scrollTop: 0
+	}, 300);
 }
 
 function formToArray(serializedFormFields) {
@@ -51,7 +54,7 @@ function showModal(modal, header, body, footer, options) {
 	modal.modal(options);
 }
 
-function load_products(key, category, id, status, orderby, orderfield, start, limit) {
+function load_products(key, category, id, status, orderby, orderfield, start, limit, obj, loadmore) {
 	
 	$.post(
 		base_url + 'process.php',
@@ -67,10 +70,22 @@ function load_products(key, category, id, status, orderby, orderfield, start, li
 			limit		: limit
 		}
 	).done(function(data){
+
+		if (!loadmore){
+			obj.empty();
+		}
 		
 		if (data.response && data.data.length) {
+			$('#load_more').removeClass('hidden')
+			if ( data.data[0].total_rows < limit || (start / limit) ==  parseInt(data.data[0].total_rows / limit) ) {
+				$('#load_more').addClass('hidden');
+			}
 			
 			$.each(data.data,function(index,value){
+				
+				value['item_name'] = value['item_name'].length > 15 ? value['item_name'].substr(0,15) + '...' : value['item_name'];
+				value['item_desc'] = value['item_desc'].length > 35 ? value['item_desc'].substr(0,15) + '...' : value['item_desc'];
+			
 				var item = $('<div></div>',{'class':'col-md-3 col-sm-6 hero-feature'})
 						.append(
 							$('<div></div>',{'class':'thumbnail'})
@@ -107,19 +122,21 @@ function load_products(key, category, id, status, orderby, orderfield, start, li
 										)
 								)
 						);
-				$('#latestProducts').append(item)
+				obj.append(item)
 			});
 		}
 		
-		$('#latestProducts').append(
-			$('<div></div>',{'class':'col-md-3 col-sm-6 hero-feature'})
-				.append(
-					$('<div></div>',{'class':'thumbnail moreItems'})
-						.html(
-							'<div class="image_container"><img src="'+base_url+'assets/images/cart.png" style="width:70% !important; height:70% !important;"></div><div class="caption"><h3>Looking for More?</h3><p>See our Products page.</p><p><a class="btn btn-danger" href="'+base_url+'?page=products">More Items</a></p></div>'
-						)
-				)
-		);
+		if ($('.page').attr('alt') == 'home') {
+			obj.append(
+				$('<div></div>',{'class':'col-md-3 col-sm-6 hero-feature'})
+					.append(
+						$('<div></div>',{'class':'thumbnail moreItems'})
+							.html(
+								'<div class="image_container"><img src="'+base_url+'assets/images/cart.png" style="width:70% !important; height:70% !important;"></div><div class="caption"><h3>Looking for More?</h3><p>See our Products page.</p><p><a class="btn btn-danger" href="'+base_url+'?page=products">More Items</a></p></div>'
+							)
+					)
+			);
+		}
 	});
 	
 }
@@ -212,14 +229,66 @@ function validateAlphaNumeric(fieldChar) {
 
 $(function(){
 	
-	if ($('#user_type').attr('alt') != 'admin') {
-		load_products('',0,0,1,'item_dateAdded','DESC',false,8);
+	if ($('#user_type').attr('alt') != 'admin' && $('.page').attr('alt') == 'home') {
+		load_products('',0,0,1,'item_dateAdded','DESC',false,8,$('#latestProducts'),false);
 	}
 	
 	$('[alphaNumeric]').on('keyup paste',function(){
 		$(this).parents('.form-group').removeClass('error').find('.note').html('');
 		if (!validateAlphaNumeric($(this).val())){
 			$(this).parents('.form-group').addClass('error').find('.note').html('Only digits and letters are allowed.');
+		}
+	});
+	
+	$('#btnLOGIN').on('click',function(e){
+		var u = $.trim($('#user').val());
+		var p = $.trim($('#pass').val());
+		
+		var modal = $('#generalModal');
+		var title = '';
+		var content = '';
+		var footer = '<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>';
+		var options = [];
+		
+		if ( !(u.length || p.length) ) {
+			title = 'Failed to Login';
+			content = '<p>Invalid Username and Password!</p>';
+			
+			showModal(modal,title,content,footer,options);
+		} else {
+			$('#btnLOGIN').prop('disabled',true);
+			
+			$.post(
+				base_url + 'process.php',
+				{
+					action	: 'login',
+					user	: u,
+					pass	: p
+				}
+			).done(function(data){
+				if (!data.response) {
+					content = '<p>'+data.message+'</p>';
+					options = 'show';
+					
+					$('#btnLOGIN').prop('disabled',false);
+				} else {
+					title = '<b>Login Succcessful<b>';
+					content = '<p>Redirecting in 3 seconds...or please click CLOSE button to proceed now.</p>';
+					options = {backdrop: "static"};
+					
+					setTimeout(function(){
+						window.location = base_url;
+					},3000);
+				}
+				
+				showModal(modal,title,content,footer,options);
+				
+				if (data.response) {
+					$('#generalModal').find('#btnCLOSE').on('click',function(){
+						window.location = base_url;
+					});
+				}
+			});
 		}
 	});
 	

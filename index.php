@@ -44,10 +44,11 @@
 	<?php require_once('views/nav.php'); ?>
 
     <!-- Page Content -->
-	<div class="container<?php echo ($admin == 1) ? '-fluid' : ''; ?>">
+	<div class="container<?php echo !empty($subpages) ? '-fluid' : ''; ?>">
 	
-		<?php if ($admin == 1 && isset(SUBMENU[$type][$page])) { $subpages = SUBMENU[$type][$page]; ?>
+		<?php if (!empty($subpages)) { ?>
 		
+		<?php if ($subpages_type == 'pages') { ?>
 		<div class="col-sm-3 sidenav">
 		  <h4><?php echo $subpages['title']; ?></h4>
 		  <ul class="nav nav-pills nav-stacked">
@@ -57,6 +58,17 @@
 			</li>
 		  <?php } ?>
 		</div>
+		<?php } else if ($subpages_type == 'side_menu') { ?>
+		<div class="col-sm-3 sidenav">
+		  <h4><?php echo $subpages['title']; ?></h4>
+		  <ul class="nav nav-pills nav-stacked" id="sidemenu<?php echo $subpages['title']; ?>">
+		  <?php foreach ($subpages['items'] as $idx => $val) { ?>
+			<li>
+				<a href="#" alt="<?php echo $idx; ?>"><?php echo $val; ?></a>
+			</li>
+		  <?php } ?>
+		</div>
+		<?php } ?>
 		
 		<div class="col-sm-9">
 		
@@ -70,6 +82,7 @@
 		
 		<?php if ($admin == 1) { ?></div><?php } ?>
 		<br /><br />
+		
         <!-- Footer -->
         <footer class="navbar-fixed-bottom">
 			<hr>
@@ -102,6 +115,8 @@
 			</div>
 		  </div>
 	
+		<div class="hidden page" alt="<?php echo $page; ?>"></div>
+		
     </div>
     <!-- /.container -->
 	

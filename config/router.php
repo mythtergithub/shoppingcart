@@ -18,13 +18,41 @@
 		$type = ($admin == 1) ? 'admin' : 'client';
 	}
 	
+	$subpages = SUBMENU[$type][$page] ?? [];
+	$subpages_type = '';
+	
 	switch ($page) {
 		case 'home':
-			$javascript_files[] = '<script src="assets/js/'.$page.'.js"></script>';
+			// $javascript_files[] = '<script src="assets/js/'.$page.'.js"></script>';
 			break;
 			
 		case 'products':
 			authenticate_user($type, $page);
+			
+			require_once('database.php');
+			
+			$cat_res = load_categories(['id'=>0], $LINK);
+			
+			if ( $cat_res['Result'] == '0' && ( !empty($cat_res['data']) && is_array($cat_res['data']) ) ) {
+				$subpages = [
+					'title' => 'Categories',
+					'items' => []
+				];
+				
+				$subpages['items'][0] = 'All Products';
+				foreach ($cat_res['data'] as $idx => $val) {
+					$subpages['items'][$val['category_id']] = $val['category_name'];
+				}
+				
+				$subpages_type = 'side_menu';
+			}
+			
+			// $view_type = $_GET['view_type'] ?? 'all';
+			// switch($view_type) {
+				// case 'all':
+			// }
+			
+			$javascript_files[] = '<script src="assets/js/'.$page.'.js"></script>';
 			
 			break;
 			
@@ -51,6 +79,7 @@
 		case 'product_management':
 			authenticate_user($type, $page);
 			$subpage = (!empty($subpage)) ? $subpage : 'product_list';
+			$subpages_type = 'pages';
 			
 			switch ($subpage) {
 				case 'product_list':

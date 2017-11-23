@@ -224,7 +224,7 @@ var view_category = function() {
 								action		: 'load_category_list',
 								key			: '',
 								category	: 0,
-								id			: params['category_code'],
+								code		: params['category_code'],
 								orderby		: false,
 								orderfield	: false,
 								start		: false,
@@ -254,7 +254,7 @@ var view_category = function() {
 										showModal(
 											modal,
 											'Update Category Details',
-											'Sucessfully updated Category details.',
+											'Sucessfully updated category details.',
 											'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 											''
 										);
@@ -270,7 +270,7 @@ var view_category = function() {
 										showModal(
 											modal,
 											'Update Category Details',
-											'Failed to update Category details.<br />' + data.message,
+											'Failed to update category details.<br />' + data.message,
 											'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 											'show'
 										);
@@ -297,7 +297,7 @@ var view_category = function() {
 								showModal(
 									modal,
 									'Update Category Details',
-									'Sucessfully updated Category details.',
+									'Sucessfully updated category details.',
 									'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 									'show'
 								);
@@ -313,7 +313,7 @@ var view_category = function() {
 								showModal(
 									modal,
 									'Update Category Details',
-									'Failed to update Category details.<br />' + data.message,
+									'Failed to update category details.<br />' + data.message,
 									'<button type="button" class="btn btn-default ripple" data-dismiss="modal" id="btnCLOSE">Close</button>',
 									'show'
 								);

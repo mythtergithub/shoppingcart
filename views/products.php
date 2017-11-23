@@ -1,6 +1,21 @@
-<header class="jumbotron hero-spacer">
-	<h1>Products Page</h1>
-	<p>This page is under construction. Please contact the administrator.</p>
-	<p><a class="btn btn-primary btn-large" href="<?php echo BASE_URL; ?>">Back to Home</a>
-	</p>
-</header>
+<div class="row">
+	<div class="col-lg-6">
+		<div class="form-group" id="searchForm">
+			<div class="input-group">
+				<span class="input-group-addon">
+					<span>Search Products</span>
+				</span>
+				<input type="text" class="form-control field" id="keyword" name="keyword" placeholder="Search here..." />
+				<div class="input-group-btn">
+					<button class="btn btn-default" type="button" id="btnSEARCH">
+						<span class="glyphicon glyphicon-search"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row text-center" id="product_list">
+</div>
+<div class="row text-center"><button id="load_more" class="btn btn-success" alt="1">Load More <span class="glyphicon glyphicon-chevron-down"></span></button></div>
+<br /><br /><br />

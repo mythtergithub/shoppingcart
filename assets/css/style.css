@@ -52,6 +52,10 @@
     bottom: 0;
 }
 
+.caption > * {
+	word-break: break-all;
+}
+
 .moreItems {
 	background: #0099cc !important;
 }
