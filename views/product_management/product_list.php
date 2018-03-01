@@ -10,10 +10,8 @@
 			<img src="" />
 		</div>
 		<div class="form-group caption">
-			<label>
-				Change image?
-				<input type="checkbox" id="changeImage" />
-			</label>
+			Change image?
+			<input type="checkbox" id="changeImage" />
 			<div class='input-group'>
 				<input type="file" accept=".jpg" id="imgItem" disabled />
 				<span class="note"></span><br />

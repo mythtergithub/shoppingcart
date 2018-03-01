@@ -18,4 +18,5 @@
 <div class="row text-center" id="product_list">
 </div>
 <div class="row text-center"><button id="load_more" class="btn btn-success hidden" alt="1">Load More <span class="glyphicon glyphicon-chevron-down"></span></button></div>
+</div>
 <br /><br /><br />

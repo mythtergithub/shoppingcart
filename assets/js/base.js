@@ -242,6 +242,12 @@ $(function(){
 		}
 	});
 	
+	$('#pass').on('keyup',function(event){
+		if(event.keyCode == 13 && $(this).val() != ''){
+        	$('#btnLOGIN').click();
+	    }
+	});
+	
 	$('#btnLOGIN').on('click',function(e){
 		var u = $.trim($('#user').val());
 		var p = $.trim($('#pass').val());
@@ -258,6 +264,7 @@ $(function(){
 			
 			showModal(modal,title,content,footer,options);
 		} else {
+			$('#pass').prop('disabled',true);
 			$('#btnLOGIN').prop('disabled',true);
 			
 			$.post(
@@ -272,6 +279,7 @@ $(function(){
 					content = '<p>'+data.message+'</p>';
 					options = 'show';
 					
+					$('#pass').prop('disabled',false);
 					$('#btnLOGIN').prop('disabled',false);
 				} else {
 					title = '<b>Login Succcessful<b>';

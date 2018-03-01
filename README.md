@@ -1,10 +1,33 @@
-# shoppingcart
+# README #
+
 A test application simulating a shopping cart (still a work-in-progress)
 
-Admin Credentials
-u: admin
-p: admin
+Admin Credentials u: admin p: admin
 
-Test Client Credentials
-u: test_client
-p: test
+Test Client Credentials u: test_client p: test
+
+### What is this repository for? ###
+
+* Quick summary
+* Version
+* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+
+### How do I get set up? ###
+
+* Summary of set up
+* Configuration
+* Dependencies
+* Database configuration
+* How to run tests
+* Deployment instructions
+
+### Contribution guidelines ###
+
+* Writing tests
+* Code review
+* Other guidelines
+
+### Who do I talk to? ###
+
+* Repo owner or admin
+* Other community or team contact
