@@ -1,9 +1,9 @@
 <?php
-	
+
 	date_default_timezone_set('Asia/Manila');
 
-	define('BASE_URL', '//test.others/shoppingcart/');
-	
+		define('BASE_URL', '//shopping.cart/');
+
 	$pages = [
 		'admin' => [
 			'dashboard' => '',
@@ -25,9 +25,9 @@
 			'contact' => 'Contact'
 		]
 	];
-	
+
 	define('PAGES', $pages);
-	
+
 	$submenu = [
 		'admin' => [
 			'product_management' => [
@@ -57,11 +57,11 @@
 			]
 		]
 	];
-	
+
 	define('SUBMENU', $submenu);
-	
+
 	define('DBASE_DATE', date('Y-m-d H:i:s'));
-	
+
 	define('IMAGES_DIR', $_SERVER['DOCUMENT_ROOT'] . '/shoppingcart/assets/images/');
 
 ?>

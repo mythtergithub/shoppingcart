@@ -25,14 +25,14 @@
 			  <div class="form-group" id="frmLOGIN">
 				<div class="input-group">
 					<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-					<input id="user" type="text" class="form-control" name="user" placeholder="Username">
+					<input id="user" type="text" class="form-control input-sm" name="user" placeholder="Username">
 				</div>
 				<div class="input-group">
 					<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-					<input id="pass" type="password" class="form-control" name="pass" placeholder="Password">
+					<input id="pass" type="password" class="form-control input-sm" name="pass" placeholder="Password">
 				</div>
 			  </div>
-			  <button type="button" class="btn btn-default" id="btnLOGIN">LOGIN</button>
+			  <button type="button" class="btn btn-default btn-sm" id="btnLOGIN">LOGIN</button>
 			</form>
 			<?php } else { ?>
 			<ul class="nav navbar-nav navbar-right">

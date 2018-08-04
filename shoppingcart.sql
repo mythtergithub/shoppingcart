@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `shoppingcart`
 --
+CREATE DATABASE IF NOT EXISTS `shoppingcart`;
+USE `shoppingcart`;
 
 -- --------------------------------------------------------
 
